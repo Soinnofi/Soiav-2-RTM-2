@@ -4954,39 +4954,3 @@ body.start-fullscreen {
     transform: scale(1.05);
     box-shadow: var(--shadow);
 }
-
-/* ================== ГОРИЗОНТАЛЬНАЯ ПРОКРУТКА ДЛЯ ОБОЕВ ================== */
-
-.wallpaper-grid {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    padding: 10px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    white-space: nowrap;
-}
-
-.wallpaper-option {
-    flex-shrink: 0;
-    width: 200px;
-    height: 150px;
-    scroll-snap-align: start;
-}
-
-/* Ползунок */
-.wallpaper-grid::-webkit-scrollbar {
-    height: 6px;
-}
-
-.wallpaper-grid::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-.wallpaper-grid::-webkit-scrollbar-thumb {
-    background: var(--accent-color);
-    border-radius: 10px;
-}
