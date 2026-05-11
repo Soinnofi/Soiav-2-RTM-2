@@ -4484,3 +4484,356 @@ toggleStartMenuMode = function() {
     }
     localStorage.setItem('soiav-start-menu-mode', startMenuMode);
 };
+// ================== НОВЫЕ АНИМАЦИИ ==================
+function addAnimationClass(element, animation) {
+    element.classList.add(animation);
+    setTimeout(() => element.classList.remove(animation), 500);
+}
+
+// Анимация для иконок при наведении
+document.querySelectorAll('.desktop-icon, .taskbar-app, .start-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => addAnimationClass(el, 'bounce-animation'));
+});
+
+// ================== ОНЛАЙН МАГАЗИН (SERVERS) ==================
+let storeServerConnected = false;
+let onlineApps = [];
+
+async function connectToStoreServer() {
+    try {
+        const response = await fetch('http://localhost:5000/api/store/stats');
+        if (response.ok) {
+            storeServerConnected = true;
+            document.getElementById('storeServerStatus')?.classList.add('online');
+            document.getElementById('storeServerStatus')?.classList.remove('offline');
+            return true;
+        }
+    } catch(e) {
+        console.log('Сервер магазина не запущен');
+    }
+    storeServerConnected = false;
+    document.getElementById('storeServerStatus')?.classList.add('offline');
+    document.getElementById('storeServerStatus')?.classList.remove('online');
+    return false;
+}
+
+async function loadOnlineApps(category = 'all', search = '') {
+    if (!storeServerConnected) await connectToStoreServer();
+    
+    const appsGrid = document.getElementById('appsGrid');
+    if (appsGrid) {
+        appsGrid.innerHTML = '<div class="store-loading"><div class="spinner"></div><p>Загрузка приложений...</p></div>';
+    }
+    
+    let url = storeServerConnected ? 
+        `http://localhost:5000/api/store/apps?category=${category}&search=${encodeURIComponent(search)}` :
+        '/api/store/apps-local';
+    
+    try {
+        let apps = [];
+        if (storeServerConnected) {
+            const response = await fetch(url);
+            const data = await response.json();
+            apps = data.items || [];
+            onlineApps = apps;
+        } else {
+            apps = getLocalApps();
+        }
+        
+        renderOnlineApps(apps);
+        updateStoreStats();
+    } catch(e) {
+        renderOnlineApps(getLocalApps());
+    }
+}
+
+function getLocalApps() {
+    return [
+        {id: "calc", name: "Калькулятор", price: 0, is_free: true, rating: 4.5, downloads: 1234, size: "2 MB", icon: "fa-calculator", category: "utilities", description: "Простой калькулятор"},
+        {id: "notepad", name: "Блокнот", price: 0, is_free: true, rating: 4.3, downloads: 5678, size: "1 MB", icon: "fa-edit", category: "utilities", description: "Текстовый редактор"},
+        {id: "snake", name: "Змейка", price: 0, is_free: true, rating: 4.7, downloads: 3456, size: "3 MB", icon: "fa-gamepad", category: "games", description: "Классическая игра"},
+        {id: "tetris", name: "Тетрис", price: 99, is_free: false, rating: 4.8, downloads: 7890, size: "5 MB", icon: "fa-th-large", category: "games", description: "Головоломка"},
+    ];
+}
+
+function renderOnlineApps(apps) {
+    const appsGrid = document.getElementById('appsGrid');
+    if (!appsGrid) return;
+    
+    appsGrid.innerHTML = '';
+    apps.forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'app-card';
+        card.innerHTML = `
+            <div class="app-icon"><i class="fas ${app.icon}"></i></div>
+            <div class="app-title">${app.name}</div>
+            <div class="app-desc">${app.description || app.short_desc || ''}</div>
+            <div class="app-meta">
+                <span>${app.size || 'N/A'}</span>
+                <span>⭐ ${app.rating || 0}</span>
+                <span>📥 ${(app.downloads || 0).toLocaleString()}</span>
+            </div>
+            <button class="install-btn" onclick="downloadOnlineApp('${app.id}')">
+                ${app.is_free ? 'Бесплатно' : `${app.price} ₽`}
+            </button>
+        `;
+        card.onclick = (e) => { if(!e.target.classList.contains('install-btn')) showAppDetails(app); };
+        appsGrid.appendChild(card);
+    });
+}
+
+async function downloadOnlineApp(appId) {
+    const app = onlineApps.find(a => a.id === appId) || getLocalApps().find(a => a.id === appId);
+    if (!app) return;
+    
+    showNotification('Магазин', `Скачивание ${app.name}...`);
+    
+    if (storeServerConnected) {
+        try {
+            await fetch('http://localhost:5000/api/store/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ app_id: appId, user_id: localStorage.getItem('soiav-user-id') || 'anonymous' })
+            });
+        } catch(e) {}
+    }
+    
+    // Показываем прогресс скачивания
+    showDownloadProgress(app.name);
+    
+    setTimeout(() => {
+        if (!installedApps.has(appId)) {
+            installedApps.add(appId);
+            createDesktopIconForApp(app);
+            showNotification('Магазин', `${app.name} успешно установлен!`);
+        }
+        closeDownloadProgress();
+    }, 3000);
+}
+
+function showDownloadProgress(appName) {
+    let progressDiv = document.getElementById('downloadProgress');
+    if (!progressDiv) {
+        progressDiv = document.createElement('div');
+        progressDiv.id = 'downloadProgress';
+        progressDiv.className = 'download-progress';
+        progressDiv.innerHTML = `
+            <div><strong><i class="fas fa-download"></i> Скачивание</strong></div>
+            <div id="downloadAppName">${appName}</div>
+            <div class="progress-bar"><div class="progress-fill" id="downloadProgressFill"></div></div>
+        `;
+        document.body.appendChild(progressDiv);
+    } else {
+        document.getElementById('downloadAppName').textContent = appName;
+        progressDiv.style.display = 'block';
+    }
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 10;
+        document.getElementById('downloadProgressFill').style.width = progress + '%';
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                if(progressDiv) progressDiv.style.display = 'none';
+            }, 1000);
+        }
+    }, 300);
+}
+
+function closeDownloadProgress() {
+    const div = document.getElementById('downloadProgress');
+    if(div) div.style.display = 'none';
+}
+
+function createDesktopIconForApp(app) {
+    const desktopIcons = document.querySelector('.desktop-icons');
+    if(!desktopIcons || document.querySelector(`.desktop-icon[data-app="${app.id}"]`)) return;
+    
+    const icon = document.createElement('div');
+    icon.className = 'desktop-icon';
+    icon.setAttribute('data-app', app.id);
+    icon.innerHTML = `<i class="fas ${app.icon}"></i><span>${app.name}</span>`;
+    icon.onclick = () => openFakeApp(app);
+    desktopIcons.appendChild(icon);
+}
+
+function openFakeApp(app) {
+    showNotification(app.name, `Приложение "${app.name}" запущено (демо-версия)`);
+}
+
+function showAppDetails(app) {
+    let modal = document.getElementById('appDetailsModal');
+    if(!modal) {
+        modal = document.createElement('div');
+        modal.id = 'appDetailsModal';
+        modal.className = 'app-details-modal';
+        document.body.appendChild(modal);
+    }
+    
+    modal.innerHTML = `
+        <div class="app-details-header">
+            <i class="fas ${app.icon}"></i>
+            <h2>${app.name}</h2>
+            <div class="server-status ${storeServerConnected ? '' : 'offline'}">
+                <i class="fas fa-${storeServerConnected ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${storeServerConnected ? 'Онлайн магазин' : 'Локальный режим'}
+            </div>
+        </div>
+        <div class="app-details-body">
+            <p>${app.description || 'Нет описания'}</p>
+            <div class="app-details-features">
+                <span class="feature-tag"><i class="fas fa-star"></i> Рейтинг: ${app.rating || 0}</span>
+                <span class="feature-tag"><i class="fas fa-download"></i> Загрузок: ${(app.downloads || 0).toLocaleString()}</span>
+                <span class="feature-tag"><i class="fas fa-hdd"></i> Размер: ${app.size || 'N/A'}</span>
+                <span class="feature-tag"><i class="fas fa-tag"></i> ${app.is_free ? 'Бесплатно' : `${app.price} ₽`}</span>
+            </div>
+        </div>
+        <div class="app-details-footer">
+            <button class="setup-btn" onclick="downloadOnlineApp('${app.id}'); closeAppDetails()">Установить</button>
+            <button class="setup-btn secondary" onclick="closeAppDetails()">Закрыть</button>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+function closeAppDetails() {
+    const modal = document.getElementById('appDetailsModal');
+    if(modal) modal.style.display = 'none';
+}
+
+async function updateStoreStats() {
+    if(!storeServerConnected) await connectToStoreServer();
+    
+    const statsContainer = document.querySelector('.store-stats-bar');
+    if(!statsContainer) return;
+    
+    if(storeServerConnected) {
+        try {
+            const response = await fetch('http://localhost:5000/api/store/stats');
+            const data = await response.json();
+            const stats = data.stats;
+            statsContainer.innerHTML = `
+                <div class="stat-badge"><i class="fas fa-apps"></i> ${stats.total_apps} приложений</div>
+                <div class="stat-badge"><i class="fas fa-download"></i> ${stats.total_downloads.toLocaleString()} загрузок</div>
+                <div class="stat-badge"><i class="fas fa-gift"></i> ${stats.free_apps} бесплатных</div>
+                <div class="stat-badge"><i class="fas fa-star"></i> ${stats.paid_apps} платных</div>
+            `;
+        } catch(e) {}
+    } else {
+        const localApps = getLocalApps();
+        statsContainer.innerHTML = `
+            <div class="stat-badge"><i class="fas fa-apps"></i> ${localApps.length} приложений</div>
+            <div class="stat-badge"><i class="fas fa-download"></i> Локальный режим</div>
+            <div class="stat-badge server-status offline"><i class="fas fa-plug"></i> Сервер не запущен</div>
+        `;
+    }
+}
+
+// Обновляем функцию открытия магазина
+const originalStoreOpen = openApp;
+openApp = function(appId) {
+    originalStoreOpen(appId);
+    if(appId === 'store') {
+        setTimeout(() => {
+            loadOnlineApps();
+            const searchInput = document.getElementById('storeSearch');
+            if(searchInput) {
+                searchInput.addEventListener('input', (e) => loadOnlineApps('all', e.target.value));
+            }
+            const cats = document.querySelectorAll('.category-btn');
+            cats.forEach(btn => {
+                btn.onclick = () => {
+                    cats.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadOnlineApps(btn.textContent === 'Все' ? 'all' : 
+                                  btn.textContent === 'Игры' ? 'games' :
+                                  btn.textContent === 'SSAP' ? 'ssap' : 'apps');
+                };
+            });
+        }, 100);
+    }
+};
+
+// Запускаем подключение к серверу
+setTimeout(() => connectToStoreServer(), 1000);
+
+// ================== НОВЫЕ ПУНКТЫ В ПРИЛОЖЕНИЯХ ==================
+
+// Добавляем новые приложения в меню пуск
+const newApps = [
+    {name: "Калькулятор", icon: "fas fa-calculator", action: "calculator"},
+    {name: "Змейка", icon: "fas fa-gamepad", action: "snake"},
+    {name: "Тетрис", icon: "fas fa-th-large", action: "tetris"},
+    {name: "Шахматы", icon: "fas fa-chess", action: "chess"},
+    {name: "Сапёр", icon: "fas fa-flag", action: "minesweeper"}
+];
+
+function addNewAppsToStartMenu() {
+    const startApps = document.querySelector('.start-menu-apps');
+    if(startApps && !document.querySelector('.start-menu-item[data-app="calculator"]')) {
+        newApps.forEach(app => {
+            const item = document.createElement('div');
+            item.className = 'start-menu-item';
+            item.setAttribute('data-app', app.action);
+            item.innerHTML = `<i class="${app.icon}"></i><span>${app.name}</span>`;
+            item.onclick = () => showNotification(app.name, `Демо-приложение "${app.name}"`);
+            startApps.appendChild(item);
+        });
+    }
+}
+
+setTimeout(addNewAppsToStartMenu, 1000);
+
+// ================== НОВЫЕ ОБОИ ==================
+
+function addNewWallpapers() {
+    const newWallpapers = [
+        'https://i.ibb.co/DHSVYYT7/IMG-4555.png',
+        'https://i.ibb.co/LXwRKZvJ/IMG-4554.png',
+        'https://i.ibb.co/XrXhFsfd/IMG-4541.jpg',
+        'https://i.ibb.co/Mm7QHdm/IMG-4537.png',
+        'https://i.ibb.co/DfhR03QY/IMG-4540.jpg',
+        'https://i.ibb.co/TMpLx19c/IMG-4535.jpg',
+        'https://i.ibb.co/DHc83R8m/IMG-4532.jpg',
+        'https://i.ibb.co/4njh5XfW/IMG-4536.jpg',
+        'https://i.ibb.co/XrG22RV7/IMG-4530.png',
+        'https://i.ibb.co/fGtk2cF6/IMG-4531.jpg'
+    ];
+    
+    const wallpaperGrid = document.querySelector('.wallpaper-grid');
+    if(wallpaperGrid && wallpaperGrid.children.length < 12) {
+        newWallpapers.forEach((url, index) => {
+            const option = document.createElement('div');
+            option.className = 'wallpaper-option';
+            option.style.backgroundImage = `url('${url}')`;
+            option.setAttribute('data-wallpaper', index + 3);
+            option.onclick = function() {
+                document.querySelectorAll('.wallpaper-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelector('.desktop').style.backgroundImage = `url('${url}')`;
+                localStorage.setItem('soiav-wallpaper', url);
+            };
+            wallpaperGrid.appendChild(option);
+        });
+    }
+}
+
+setTimeout(addNewWallpapers, 500);
+
+// ================== НОВЫЕ АНИМАЦИИ ДЛЯ ОКОН ==================
+
+const styleAnim = document.createElement('style');
+styleAnim.textContent = `
+    .window.active { animation: rotateIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important; }
+    .desktop-icon { transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .desktop-icon:hover { transform: translateY(-5px) scale(1.1); filter: drop-shadow(0 5px 15px rgba(0,120,215,0.3)); }
+    .taskbar-app { transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .taskbar-app:hover { transform: translateY(-3px) scale(1.05); }
+    .start-btn:hover { animation: bounce 0.5s ease; }
+    @keyframes bounce {
+        0%,100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+`;
+document.head.appendChild(styleAnim);
