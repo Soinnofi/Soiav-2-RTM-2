@@ -4908,3 +4908,19 @@ window.nextStep = function(step) {
         setTimeout(updateScrollIndicator, 50);
     }
 };
+// ================== ТАЧ-ПРОКРУТКА ДЛЯ ОБОЕВ ==================
+
+let wallpaperTouchStartY = 0;
+
+document.querySelectorAll('.wallpaper-grid').forEach(grid => {
+    grid.addEventListener('touchstart', (e) => {
+        wallpaperTouchStartY = e.touches[0].clientY;
+    });
+    
+    grid.addEventListener('touchmove', (e) => {
+        const deltaY = wallpaperTouchStartY - e.touches[0].clientY;
+        grid.scrollTop += deltaY;
+        wallpaperTouchStartY = e.touches[0].clientY;
+        e.preventDefault();
+    }, { passive: false });
+});
