@@ -1340,7 +1340,7 @@ function loadSettingsContent(categoryId) {
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <img src="https://i.ibb.co/x8sWmNMy/photo-output.png" style="width: 40px; height: 40px;">
                             <div>
-                                <div style="font-weight: 600;">Soiav 2 build 5992</div>
+                                <div style="font-weight: 600;">Soiav 2 build 6002</div>
                                 <div style="font-size: 12px; color: var(--text-secondary);">Установлена последняя версия</div>
                             </div>
                         </div>
@@ -1389,9 +1389,9 @@ function loadSettingsContent(categoryId) {
                         <h2 style="color: var(--accent-color); margin-bottom: 10px;">Soiav 2 RTM</h2>
                         <p style="color: var(--text-secondary); margin-bottom: 20px;">build 5992</p>
                         <div style="line-height: 2; text-align: left;">
-                            <p><strong>Версия:</strong> 2.0.5992</p>
+                            <p><strong>Версия:</strong> 2.0.6002</p>
                             <p><strong>Сборка:</strong> RTM (Release to Manufacturing)</p>
-                            <p><strong>Дата выпуска:</strong> Март 2026</p>
+                            <p><strong>Дата выпуска:</strong> Май 2026</p>
                             <p><strong>Разработчик:</strong> Soiav Systems</p>
                             <p><strong>Платформа:</strong> Soiav OS</p>
                             <p><strong>Тип системы:</strong> 64-разрядная</p>
