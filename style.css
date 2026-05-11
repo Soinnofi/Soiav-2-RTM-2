@@ -4954,21 +4954,21 @@ body.start-fullscreen {
     transform: scale(1.05);
     box-shadow: var(--shadow);
 }
-/* ================== ФИКС ПРОКРУТКИ ОБОЕВ (ЧТОБЫ КНОПКИ БЫЛИ ВИДНЫ) ================== */
+/* ================== ФИКС ТОЛЬКО ДЛЯ ШАГА 2 (ОБОИ) ================== */
 
-.setup-step {
+#step2 {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-height: 500px;
+    height: auto;
+    max-height: 450px;
 }
 
-.setup-step h2 {
+#step2 h2 {
     flex-shrink: 0;
     margin-bottom: 15px;
 }
 
-.wallpaper-scroll-container {
+#step2 .wallpaper-scroll-container {
     flex: 1;
     overflow-y: auto;
     margin: 10px 0;
@@ -4976,46 +4976,42 @@ body.start-fullscreen {
     min-height: 0;
 }
 
-.wallpaper-grid {
+#step2 .wallpaper-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 
-.setup-buttons {
+#step2 .setup-buttons {
     flex-shrink: 0;
     margin-top: 20px;
     padding-top: 10px;
 }
 
-/* Скроллбар */
-.wallpaper-scroll-container::-webkit-scrollbar {
+/* Скроллбар только для шага 2 */
+#step2 .wallpaper-scroll-container::-webkit-scrollbar {
     width: 6px;
 }
 
-.wallpaper-scroll-container::-webkit-scrollbar-track {
+#step2 .wallpaper-scroll-container::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
 
-.wallpaper-scroll-container::-webkit-scrollbar-thumb {
+#step2 .wallpaper-scroll-container::-webkit-scrollbar-thumb {
     background: var(--accent-color);
     border-radius: 10px;
 }
 
-/* Адаптация под маленькие экраны */
+/* Адаптация */
 @media (max-width: 768px) {
-    .wallpaper-grid {
+    #step2 .wallpaper-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .setup-step {
-        max-height: 400px;
     }
 }
 
 @media (max-width: 480px) {
-    .wallpaper-grid {
+    #step2 .wallpaper-grid {
         grid-template-columns: 1fr;
     }
 }
