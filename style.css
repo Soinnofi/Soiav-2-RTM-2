@@ -4955,23 +4955,30 @@ body.start-fullscreen {
     box-shadow: var(--shadow);
 }
 
-/* ================== ПОЛЗУНОК ДЛЯ ОБОЕВ (ДЛЯ ПАЛЬЦЕВ ТОЖЕ) ================== */
+/* ================== ГОРИЗОНТАЛЬНАЯ ПРОКРУТКА ДЛЯ ОБОЕВ ================== */
 
 .wallpaper-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
     gap: 15px;
-    max-height: 320px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    padding: 10px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+    white-space: nowrap;
 }
 
-/* Для мышки */
+.wallpaper-option {
+    flex-shrink: 0;
+    width: 200px;
+    height: 150px;
+    scroll-snap-align: start;
+}
+
+/* Ползунок */
 .wallpaper-grid::-webkit-scrollbar {
-    width: 8px;
+    height: 6px;
 }
 
 .wallpaper-grid::-webkit-scrollbar-track {
@@ -4982,16 +4989,4 @@ body.start-fullscreen {
 .wallpaper-grid::-webkit-scrollbar-thumb {
     background: var(--accent-color);
     border-radius: 10px;
-}
-
-/* Для пальцев - большая область прокрутки */
-@media (max-width: 1024px) {
-    .wallpaper-grid {
-        max-height: 350px;
-        padding: 10px;
-    }
-    
-    .wallpaper-option {
-        min-height: 120px;
-    }
 }
