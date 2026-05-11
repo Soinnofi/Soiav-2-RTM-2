@@ -4837,3 +4837,74 @@ styleAnim.textContent = `
     }
 `;
 document.head.appendChild(styleAnim);
+// ================== ПОЛЗУНОК ДЛЯ ОБОЕВ В МАСТЕРЕ УСТАНОВКИ ==================
+
+function scrollWallpapers(direction) {
+    const grid = document.getElementById('wallpaperGrid');
+    if (!grid) return;
+    
+    const scrollAmount = 300;
+    if (direction === -1) {
+        grid.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
+    } else {
+        grid.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+    }
+    
+    // Обновляем индикаторы после прокрутки
+    setTimeout(updateScrollIndicator, 100);
+}
+
+function updateScrollIndicator() {
+    const grid = document.getElementById('wallpaperGrid');
+    const indicator = document.getElementById('scrollIndicator');
+    if (!grid || !indicator) return;
+    
+    const scrollTop = grid.scrollTop;
+    const maxScroll = grid.scrollHeight - grid.clientHeight;
+    const scrollPercent = maxScroll > 0 ? scrollTop / maxScroll : 0;
+    
+    // Создаем индикаторы (10 штук)
+    const numDots = 10;
+    let dotsHtml = '';
+    
+    for (let i = 0; i < numDots; i++) {
+        const dotPosition = i / (numDots - 1);
+        const isActive = Math.abs(scrollPercent - dotPosition) < (1 / numDots);
+        dotsHtml += `<div class="scroll-dot ${isActive ? 'active' : ''}" onclick="scrollToWallpaper(${i / (numDots - 1)})"></div>`;
+    }
+    
+    indicator.innerHTML = dotsHtml;
+}
+
+function scrollToWallpaper(percent) {
+    const grid = document.getElementById('wallpaperGrid');
+    if (!grid) return;
+    
+    const maxScroll = grid.scrollHeight - grid.clientHeight;
+    grid.scrollTo({ top: maxScroll * percent, behavior: 'smooth' });
+    
+    setTimeout(updateScrollIndicator, 100);
+}
+
+// Добавляем обработчик прокрутки для обновления индикаторов
+function initWallpaperScroll() {
+    const grid = document.getElementById('wallpaperGrid');
+    if (grid) {
+        grid.addEventListener('scroll', updateScrollIndicator);
+        setTimeout(updateScrollIndicator, 100);
+    }
+}
+
+// Запускаем при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    initWallpaperScroll();
+});
+
+// Также обновляем при открытии шага с обоями
+const originalNextStep = window.nextStep;
+window.nextStep = function(step) {
+    if (originalNextStep) originalNextStep(step);
+    if (step === 2) {
+        setTimeout(updateScrollIndicator, 50);
+    }
+};
