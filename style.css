@@ -4679,114 +4679,93 @@ body.start-fullscreen {
         margin-bottom: 20px;
     }
 }
-/* ================== НОВЫЕ КРАСИВЫЕ АНИМАЦИИ ================== */
-
+/* НОВЫЕ АНИМАЦИИ */
 @keyframes float {
-    0% { transform: translateY(0px); }
+    0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
 }
-
 @keyframes glow {
-    0% { box-shadow: 0 0 5px rgba(0, 120, 215, 0.5); }
-    50% { box-shadow: 0 0 20px rgba(0, 120, 215, 0.8); }
-    100% { box-shadow: 0 0 5px rgba(0, 120, 215, 0.5); }
+    0% { box-shadow: 0 0 5px rgba(0,120,215,0.5); }
+    50% { box-shadow: 0 0 20px rgba(0,120,215,0.8); }
+    100% { box-shadow: 0 0 5px rgba(0,120,215,0.5); }
 }
-
-@keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
 }
-
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
+    0%,100% { transform: translateY(0); }
     50% { transform: translateY(-15px); }
 }
-
-@keyframes rotate-3d {
-    0% { transform: perspective(1000px) rotateY(0deg); }
-    100% { transform: perspective(1000px) rotateY(360deg); }
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
-
-@keyframes wave {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(-10px); }
-    100% { transform: translateX(0); }
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-100%); }
+    to { opacity: 1; transform: translateX(0); }
 }
-
-@keyframes pulse-glow {
-    0% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.05); }
-    100% { opacity: 0.6; transform: scale(1); }
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(100%); }
+    to { opacity: 1; transform: translateY(0); }
 }
-
-/* Применение анимаций */
-.desktop-icon {
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+@keyframes rotateIn {
+    from { opacity: 0; transform: rotate(-180deg) scale(0); }
+    to { opacity: 1; transform: rotate(0) scale(1); }
 }
-
-.desktop-icon:hover {
-    animation: float 0.5s ease infinite;
+@keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
-
-.window {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
-
-.window.active {
-    animation: windowSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+@keyframes ripple {
+    0% { transform: scale(0); opacity: 0.5; }
+    100% { transform: scale(4); opacity: 0; }
 }
-
-.taskbar-app {
-    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+.float-animation { animation: float 3s ease-in-out infinite; }
+.glow-animation { animation: glow 2s infinite; }
+.shimmer-bg { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
+.bounce-animation { animation: bounce 0.5s ease; }
+.spin-animation { animation: spin-slow 2s linear infinite; }
+.slide-left-animation { animation: slideInLeft 0.4s ease; }
+.slide-up-animation { animation: slideInUp 0.4s ease; }
+.rotate-animation { animation: rotateIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+/* НОВЫЕ ОБОИ */
+.wallpaper-option[data-wallpaper="3"] { background-image: url('https://i.ibb.co/DHSVYYT7/IMG-4555.png'); }
+.wallpaper-option[data-wallpaper="4"] { background-image: url('https://i.ibb.co/LXwRKZvJ/IMG-4554.png'); }
+.wallpaper-option[data-wallpaper="5"] { background-image: url('https://i.ibb.co/XrXhFsfd/IMG-4541.jpg'); }
+.wallpaper-option[data-wallpaper="6"] { background-image: url('https://i.ibb.co/Mm7QHdm/IMG-4537.png'); }
+.wallpaper-option[data-wallpaper="7"] { background-image: url('https://i.ibb.co/DfhR03QY/IMG-4540.jpg'); }
+.wallpaper-option[data-wallpaper="8"] { background-image: url('https://i.ibb.co/TMpLx19c/IMG-4535.jpg'); }
+.wallpaper-option[data-wallpaper="9"] { background-image: url('https://i.ibb.co/DHc83R8m/IMG-4532.jpg'); }
+.wallpaper-option[data-wallpaper="10"] { background-image: url('https://i.ibb.co/4njh5XfW/IMG-4536.jpg'); }
+.wallpaper-option[data-wallpaper="11"] { background-image: url('https://i.ibb.co/XrG22RV7/IMG-4530.png'); }
+.wallpaper-option[data-wallpaper="12"] { background-image: url('https://i.ibb.co/fGtk2cF6/IMG-4531.jpg'); }
+/* НОВЫЕ СТИЛИ ДЛЯ ОНЛАЙН МАГАЗИНА */
+.store-loading { text-align: center; padding: 50px; }
+.store-loading .spinner { width: 50px; height: 50px; border: 4px solid var(--background-primary); border-top-color: var(--accent-color); border-radius: 50%; margin: 0 auto 20px; animation: spin-slow 1s linear infinite; }
+.store-stats-bar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat-badge { background: var(--background-primary); border-radius: 20px; padding: 8px 16px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+.stat-badge i { color: var(--accent-color); }
+.server-status { display: inline-flex; align-items: center; gap: 6px; background: #4caf50; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; }
+.server-status.offline { background: #f44336; }
+.download-progress { position: fixed; bottom: 80px; right: 20px; background: var(--background-secondary); border-radius: 16px; padding: 12px 20px; box-shadow: var(--shadow); z-index: 10000; min-width: 250px; animation: slideInRight 0.3s ease; border-left: 3px solid var(--accent-color); }
+.download-progress .progress-bar { height: 4px; background: rgba(0,120,215,0.2); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.download-progress .progress-fill { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.3s; }
+/* НОВЫЕ ПРИЛОЖЕНИЯ В НАСТРОЙКАХ */
+.app-details-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--background-secondary); border-radius: 28px; width: 90%; max-width: 500px; z-index: 10001; box-shadow: var(--shadow); animation: scaleIn 0.3s ease; padding: 0; overflow: hidden; }
+.app-details-header { background: linear-gradient(135deg, var(--accent-color), #106ebe); padding: 30px; text-align: center; color: white; }
+.app-details-header i { font-size: 60px; margin-bottom: 15px; }
+.app-details-body { padding: 25px; }
+.app-details-body p { margin: 10px 0; line-height: 1.5; }
+.app-details-features { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+.feature-tag { background: var(--background-primary); padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+.app-details-footer { padding: 20px; border-top: 1px solid rgba(0,0,0,0.1); display: flex; gap: 10px; }
+/* АДАПТАЦИЯ */
+@media (max-width: 768px) {
+    .download-progress { left: 20px; right: 20px; min-width: auto; }
 }
-
-.taskbar-app:hover {
-    transform: translateY(-3px) scale(1.05);
-}
-
-.start-btn {
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.start-btn:hover {
-    transform: scale(1.1) rotate(5deg);
-}
-
-.app-card {
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.app-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    animation: glow 2s infinite;
-}
-
-/* Неоновый эффект */
-.neon-text {
-    color: var(--accent-color);
-    text-shadow: 0 0 5px var(--accent-color),
-                 0 0 10px var(--accent-color),
-                 0 0 20px var(--accent-color);
-    animation: pulse-glow 2s infinite;
-}
-
-/* Градиентные кнопки */
-.gradient-btn {
-    background: linear-gradient(135deg, var(--accent-color), #106ebe, #0a4a8a);
-    background-size: 200% 200%;
-    animation: shimmer 3s ease infinite;
-}
-
-/* 3D карточки */
-.card-3d {
-    transform-style: preserve-3d;
-    transition: transform 0.5s;
-}
-
-.card-3d:hover {
