@@ -4954,3 +4954,87 @@ body.start-fullscreen {
     transform: scale(1.05);
     box-shadow: var(--shadow);
 }
+/* ================== МОДАЛЬНОЕ ОКНО ПРИЛОЖЕНИЯ ================== */
+.app-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 450px;
+    background: var(--background-secondary);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    z-index: 20000;
+    animation: scaleIn 0.3s ease;
+    overflow: hidden;
+    backdrop-filter: var(--blur);
+}
+
+.app-modal-header {
+    background: linear-gradient(135deg, var(--accent-color), #106ebe);
+    padding: 25px;
+    text-align: center;
+    color: white;
+}
+
+.app-modal-header i {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.app-modal-header h3 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.app-modal-body {
+    padding: 25px;
+}
+
+.app-modal-body p {
+    margin: 10px 0;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.app-modal-info {
+    background: var(--background-primary);
+    padding: 15px;
+    border-radius: 16px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.app-modal-info span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.app-modal-info i {
+    color: var(--accent-color);
+}
+
+.app-modal-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    gap: 10px;
+}
+
+.app-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 19999;
+    backdrop-filter: blur(5px);
+}
