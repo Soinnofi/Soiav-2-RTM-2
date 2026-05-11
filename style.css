@@ -4954,7 +4954,8 @@ body.start-fullscreen {
     transform: scale(1.05);
     box-shadow: var(--shadow);
 }
-/* ================== ПОЛЗУНОК ДЛЯ ОБОЕВ ================== */
+
+/* ================== ПОЛЗУНОК ДЛЯ ОБОЕВ (ДЛЯ ПАЛЬЦЕВ ТОЖЕ) ================== */
 
 .wallpaper-grid {
     display: grid;
@@ -4962,9 +4963,13 @@ body.start-fullscreen {
     gap: 15px;
     max-height: 320px;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 5px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
 }
 
+/* Для мышки */
 .wallpaper-grid::-webkit-scrollbar {
     width: 8px;
 }
@@ -4977,4 +4982,16 @@ body.start-fullscreen {
 .wallpaper-grid::-webkit-scrollbar-thumb {
     background: var(--accent-color);
     border-radius: 10px;
+}
+
+/* Для пальцев - большая область прокрутки */
+@media (max-width: 1024px) {
+    .wallpaper-grid {
+        max-height: 350px;
+        padding: 10px;
+    }
+    
+    .wallpaper-option {
+        min-height: 120px;
+    }
 }
