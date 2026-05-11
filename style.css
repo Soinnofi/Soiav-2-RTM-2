@@ -4769,3 +4769,108 @@ body.start-fullscreen {
 @media (max-width: 768px) {
     .download-progress { left: 20px; right: 20px; min-width: auto; }
 }
+/* ПОЛЗУНОК ДЛЯ ОБОЕВ В МАСТЕРЕ УСТАНОВКИ */
+.wallpaper-scroll-container {
+    position: relative;
+    margin: 20px 0;
+}
+
+.wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px 5px;
+    scroll-behavior: smooth;
+}
+
+/* Кастомизация скроллбара для обоев */
+.wallpaper-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.wallpaper-grid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.wallpaper-grid::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
+}
+
+.wallpaper-grid::-webkit-scrollbar-thumb:hover {
+    background: #106ebe;
+}
+
+/* Индикатор прокрутки */
+.scroll-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.scroll-dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.scroll-dot.active {
+    background: var(--accent-color);
+    width: 20px;
+    border-radius: 10px;
+}
+
+.scroll-dot:hover {
+    background: var(--accent-color);
+    transform: scale(1.2);
+}
+
+/* Кнопки прокрутки */
+.scroll-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.scroll-btn {
+    background: var(--background-primary);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+}
+
+.scroll-btn:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .wallpaper-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wallpaper-grid {
+        grid-template-columns: 1fr;
+        max-height: 250px;
+    }
+}
