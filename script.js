@@ -4924,3 +4924,82 @@ document.querySelectorAll('.wallpaper-grid').forEach(grid => {
         e.preventDefault();
     }, { passive: false });
 });
+// ================== МОДАЛЬНОЕ ОКНО ДЛЯ ПРИЛОЖЕНИЙ ==================
+
+function showAppDetails(app) {
+    // Удаляем старые модалки
+    const oldModal = document.querySelector('.app-modal');
+    const oldOverlay = document.querySelector('.app-modal-overlay');
+    if (oldModal) oldModal.remove();
+    if (oldOverlay) oldOverlay.remove();
+    
+    // Создаем overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'app-modal-overlay';
+    overlay.onclick = closeAppModal;
+    document.body.appendChild(overlay);
+    
+    // Создаем модальное окно
+    const modal = document.createElement('div');
+    modal.className = 'app-modal';
+    modal.innerHTML = `
+        <div class="app-modal-header">
+            <i class="fas ${app.icon || 'fa-app-store'}"></i>
+            <h3>${app.name || 'Приложение'}</h3>
+        </div>
+        <div class="app-modal-body">
+            <p>${app.description || 'Описание отсутствует'}</p>
+            <div class="app-modal-info">
+                <span><i class="fas fa-star"></i> ${app.rating || '4.5'}</span>
+                <span><i class="fas fa-download"></i> ${(app.downloads || 0).toLocaleString()}</span>
+                <span><i class="fas fa-hdd"></i> ${app.size || 'N/A'}</span>
+                <span><i class="fas fa-tag"></i> ${app.is_free ? 'Бесплатно' : app.price + ' ₽'}</span>
+            </div>
+        </div>
+        <div class="app-modal-footer">
+            <button class="setup-btn" onclick="downloadOnlineApp('${app.id}'); closeAppModal()">Установить</button>
+            <button class="setup-btn secondary" onclick="closeAppModal()">Закрыть</button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function closeAppModal() {
+    const modal = document.querySelector('.app-modal');
+    const overlay = document.querySelector('.app-modal-overlay');
+    if (modal) modal.remove();
+    if (overlay) overlay.remove();
+}
+
+// Обновляем функцию renderOnlineApps чтобы при клике на карточку открывалось окно
+const originalRenderOnlineApps = renderOnlineApps;
+renderOnlineApps = function(apps) {
+    const appsGrid = document.getElementById('appsGrid');
+    if (!appsGrid) return;
+    
+    appsGrid.innerHTML = '';
+    apps.forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'app-card';
+        card.innerHTML = `
+            <div class="app-icon"><i class="fas ${app.icon || 'fa-app-store'}"></i></div>
+            <div class="app-title">${app.name}</div>
+            <div class="app-desc">${app.description || ''}</div>
+            <div class="app-meta">
+                <span>${app.size || 'N/A'}</span>
+                <span>⭐ ${app.rating || 0}</span>
+            </div>
+            <button class="install-btn" onclick="event.stopPropagation(); downloadOnlineApp('${app.id}')">
+                ${app.is_free ? 'Бесплатно' : `${app.price} ₽`}
+            </button>
+        `;
+        // Клик по карточке (не по кнопке) открывает детали
+        card.onclick = (e) => {
+            if(!e.target.classList.contains('install-btn')) {
+                showAppDetails(app);
+            }
+        };
+        appsGrid.appendChild(card);
+    });
+};
