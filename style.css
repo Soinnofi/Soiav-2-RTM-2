@@ -4954,3 +4954,68 @@ body.start-fullscreen {
     transform: scale(1.05);
     box-shadow: var(--shadow);
 }
+/* ================== ФИКС ПРОКРУТКИ ОБОЕВ (ЧТОБЫ КНОПКИ БЫЛИ ВИДНЫ) ================== */
+
+.setup-step {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 500px;
+}
+
+.setup-step h2 {
+    flex-shrink: 0;
+    margin-bottom: 15px;
+}
+
+.wallpaper-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    margin: 10px 0;
+    padding-right: 5px;
+    min-height: 0;
+}
+
+.wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.setup-buttons {
+    flex-shrink: 0;
+    margin-top: 20px;
+    padding-top: 10px;
+}
+
+/* Скроллбар */
+.wallpaper-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.wallpaper-scroll-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.wallpaper-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
+}
+
+/* Адаптация под маленькие экраны */
+@media (max-width: 768px) {
+    .wallpaper-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .setup-step {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wallpaper-grid {
+        grid-template-columns: 1fr;
+    }
+}
