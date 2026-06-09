@@ -1,0 +1,16 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Soiav 2",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Soiav 2 RTM 2",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "3sfi8tx6fc66jnv8",
+  "description": "Opening system Soiav 2",
+  "categories": [
+    "design"
+  ]
+}
