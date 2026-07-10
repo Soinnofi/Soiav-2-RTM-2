@@ -1,16 +1,16 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
+  "name": "Soiav 2 RTM 2",
+  "short_name": "Soiav 2",
+  "start_url": "https://soinnofi.github.io/Soiav-2-RTM-2/",
   "display": "standalone",
-  "name": "Soiav 2",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "Soiav 2 RTM 2",
-  "start_url": "/",
-  "theme_color": "#ffffff",
-  "id": "3sfi8tx6fc66jnv8",
-  "description": "Opening system Soiav 2",
-  "categories": [
-    "design"
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/p6sD6Qf0/photo-output.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
