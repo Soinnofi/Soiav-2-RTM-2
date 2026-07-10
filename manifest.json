@@ -6,10 +6,9 @@
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
+  {
+    "src": "https://images.weserv.nl/?url=i.ibb.co/p6sD6Qf0/photo-output.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]
